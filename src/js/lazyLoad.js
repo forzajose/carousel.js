@@ -3,15 +3,19 @@ import { image } from "./adapters/image";
 import { html } from "./adapters/html";
 import { youtube } from "./adapters/youtube";
 import { plaintext } from "./adapters/plaintext";
+import { itemListObject } from "./itemLists";
 
 export const lazyLoad = (itemLists) => {
-  itemLists.forEach(item => {
+  console.log(itemListObject)
+
+  itemListObject.forEach((item, index) => {
+    
     //console.log(isInViewport(item.placeholder));
     if (isInViewport(item.placeholder)) {
       if (item.placeholder.dataset.load !== 'true') {
         let key = item.placeholder.dataset.key;
-        // console.log(key);
-        // console.log(item.content);
+        console.log(index);
+
 
         if (item.content.type === 'Image') {
           image(item);
@@ -23,9 +27,15 @@ export const lazyLoad = (itemLists) => {
           plaintext(item);
         }
         item.placeholder.dataset.load = 'true';
-
+        //itemListObject.splice(index, 1);
 
       }
     }
   })
+  // console.log(keyToDelete)
+  // keyToDelete.forEach(key => {
+  //   itemListObject.splice(key, 1);
+  // });
+  console.log(itemListObject)
+
 }

@@ -1,6 +1,9 @@
+import './css/style.css'
+
 import { lazyLoad } from "./js/lazyLoad";
 import { isInViewport } from "./js/viewportChecker";
 import { getTranslateXY } from "./js/translateXY";
+import { itemListObject } from './js/itemLists';
 
 /**
  * 
@@ -18,13 +21,11 @@ export const createCarousel = (config) => {
   carouselPlace.append(carouselLabel);
 
   // Fill the carousel with data
-  let itemLists = [];
-  let itemListObject = [];
+  // let itemListObject = [];
   config.items.forEach((item, key) => {
     let i = document.createElement('li');
     i.dataset.key = key;
     i.classList.add('carousel__item', 'overlay-loader');
-    itemLists.push(i);
     itemListObject.push({'placeholder' : i, 'content': config.items[key]})
   })
   //console.log(itemListObject);
@@ -32,6 +33,8 @@ export const createCarousel = (config) => {
   // Create a wrapper for carousel data
   const carouselListWrapper = document.createElement('div');
   carouselListWrapper.setAttribute('class', 'carousel__list--wrapper');
+  let itemLists = [];
+  itemListObject.forEach(item => {itemLists.push(item.placeholder)})
   carouselListWrapper.append(...itemLists);
 
   // Create a container that will move the carousel
@@ -59,7 +62,7 @@ export const createCarousel = (config) => {
   carousel.append(rightArrow, leftArrow);
 
   // Get the number of carousel items
-  const carouselItemsCount = itemLists.length;
+  const carouselItemsCount = itemListObject.length;
 
   // Get the width of one carousel element (all elements are assumed to have the same width) 
   const carouselItemWidth = parseFloat(window.getComputedStyle(itemLists[0]).width);
@@ -109,6 +112,7 @@ export const createCarousel = (config) => {
   carouselLabel.onclick = (e) => {
     leftArrow.classList.toggle('hide-element');
     rightArrow.classList.toggle('hide-element');
+
     if (carouselOpen) {
       carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
       carouselOpen = false;
@@ -119,6 +123,7 @@ export const createCarousel = (config) => {
 
     carouselListWrapper.classList.toggle('flex-wrap');
     carouselListWrapper.classList.toggle('carousel__list--wrapper');
+    lazyLoad(itemListObject);
   }
 
   // Draggable carousel
