@@ -6,36 +6,39 @@ import { plaintext } from "./adapters/plaintext";
 import { itemListObject } from "./itemLists";
 
 export const lazyLoad = (itemLists) => {
-  console.log(itemListObject)
+  console.log('start', itemListObject)
 
-  itemListObject.forEach((item, index) => {
-    
+  Object.keys(itemListObject).forEach((item, index) => {
+    // console.log(item, index)
+    // console.log(itemListObject[item])
     //console.log(isInViewport(item.placeholder));
-    if (isInViewport(item.placeholder)) {
-      if (item.placeholder.dataset.load !== 'true') {
-        let key = item.placeholder.dataset.key;
-        console.log(index);
+    if (isInViewport(itemListObject[item].placeholder)) {
+      if (itemListObject[item].placeholder.dataset.load !== 'true') {
+        //let key = item.placeholder.dataset.key;
+        console.log('index',item);
+        //console.log('value', item);
 
 
-        if (item.content.type === 'Image') {
-          image(item);
-        } else if (item.content.type === 'HTML') {
-          html(item);
-        } else if (item.content.type === 'YouTube') {
-          youtube(item);
-        } else if (item.content.type === 'PlainText') {
-          plaintext(item);
+        if (itemListObject[item].content.type === 'Image') {
+          image(itemListObject[item]);
+        } else if (itemListObject[item].content.type === 'HTML') {
+          html(itemListObject[item]);
+        } else if (itemListObject[item].content.type === 'YouTube') {
+          youtube(itemListObject[item]);
+        } else if (itemListObject[item].content.type === 'PlainText') {
+          plaintext(itemListObject[item]);
         }
-        item.placeholder.dataset.load = 'true';
+        itemListObject[item].placeholder.dataset.load = 'true';
         //itemListObject.splice(index, 1);
+        delete itemListObject[item];
 
       }
     }
   })
-  // console.log(keyToDelete)
+   //console.log(keyToDelete)
   // keyToDelete.forEach(key => {
   //   itemListObject.splice(key, 1);
   // });
-  console.log(itemListObject)
+  console.log('end', itemListObject)
 
 }

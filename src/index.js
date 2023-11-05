@@ -26,7 +26,8 @@ export const createCarousel = (config) => {
     let i = document.createElement('li');
     i.dataset.key = key;
     i.classList.add('carousel__item', 'overlay-loader');
-    itemListObject.push({'placeholder' : i, 'content': config.items[key]})
+    // itemListObject.push({'placeholder' : i, 'content': config.items[key]})
+    itemListObject[key] = {'placeholder' : i, 'content': config.items[key]}
   })
   //console.log(itemListObject);
 
@@ -34,7 +35,8 @@ export const createCarousel = (config) => {
   const carouselListWrapper = document.createElement('div');
   carouselListWrapper.setAttribute('class', 'carousel__list--wrapper');
   let itemLists = [];
-  itemListObject.forEach(item => {itemLists.push(item.placeholder)})
+  Object.values(itemListObject).forEach(item => {itemLists.push(item.placeholder)})
+  //console.log('itemlist',itemLists)
   carouselListWrapper.append(...itemLists);
 
   // Create a container that will move the carousel
@@ -62,7 +64,7 @@ export const createCarousel = (config) => {
   carousel.append(rightArrow, leftArrow);
 
   // Get the number of carousel items
-  const carouselItemsCount = itemListObject.length;
+  const carouselItemsCount = Object.keys(itemListObject).length;
 
   // Get the width of one carousel element (all elements are assumed to have the same width) 
   const carouselItemWidth = parseFloat(window.getComputedStyle(itemLists[0]).width);
@@ -77,6 +79,7 @@ export const createCarousel = (config) => {
   // Move carousel items by clicking on arrows
   rightArrow.onclick = (e) => {
     lazyLoad(itemListObject);
+   // console.log(carouselListWidth);
 
     if (scrollDistance < carouselListWidth / 2) {
       scrollDistance += scrollStep;
