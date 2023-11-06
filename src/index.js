@@ -1,6 +1,6 @@
 import './css/style.css'
 
-import { lazyLoad } from "./js/lazyLoad";
+import { checkItemsVisibility } from "./js/checkItemsVisibility";
 import { isInViewport } from "./js/viewportChecker";
 import { getTranslateXY } from "./js/translateXY";
 import { itemListObject } from './js/itemLists';
@@ -78,7 +78,7 @@ export const createCarousel = (config) => {
 
   // Move carousel items by clicking on arrows
   rightArrow.onclick = (e) => {
-    lazyLoad(itemListObject);
+    checkItemsVisibility(itemListObject);
    // console.log(carouselListWidth);
 
     if (scrollDistance < carouselListWidth / 2) {
@@ -93,7 +93,7 @@ export const createCarousel = (config) => {
     }
   }
   leftArrow.onclick = (e) => {
-    lazyLoad(itemListObject);
+    checkItemsVisibility(itemListObject);
 
     if (scrollDistance > -carouselListWidth / 2) {
       scrollDistance -= scrollStep;
@@ -126,27 +126,32 @@ export const createCarousel = (config) => {
 
     carouselListWrapper.classList.toggle('flex-wrap');
     carouselListWrapper.classList.toggle('carousel__list--wrapper');
-    lazyLoad(itemListObject);
+
+    // wait 0.5 seconds until carousel items return to the center of the screen so they can be properly processed by lazyLoad function.
+    // IMPORTANT
+    // If changing carousel carouselList transition speed then accordingly change the time interval    
+    setTimeout(()=>{checkItemsVisibility(itemListObject, 'y')}, 500); 
   }
 
   // Draggable carousel
   carouselList.onmousedown = function(event) {
-    //console.log(event);
-    carouselList.style.transition = 'none';
-    carouselList.style.cursor = 'grab';
-    let startPosition = event.pageX;
+    if (carouselOpen === false) {
+      carouselList.style.transition = 'none';
+      carouselList.style.cursor = 'grab';
+      let startPosition = event.pageX;
+    
+      let translateX = getTranslateXY(carouselList)["translateX"];
+    
+      carouselList.onmousemove = function(event) {
+        let currentPosition = event.pageX;
+        let difference = startPosition - currentPosition;
   
-    let translateX = getTranslateXY(carouselList)["translateX"];
-  
-    carouselList.onmousemove = function(event) {
-  //console.log(event);
-      let currentPosition = event.pageX;
-      let difference = startPosition - currentPosition;
-
-      scrollDistance = translateX - difference;
-  
-      carouselList.style.transform = "translateX(" + parseInt(scrollDistance) + "px)";
-      lazyLoad(itemListObject);
+        scrollDistance = translateX - difference;
+    
+        carouselList.style.transform = "translateX(" + parseInt(scrollDistance) + "px)";
+        checkItemsVisibility(itemListObject);
+    }
+    
     }
   }
   
@@ -159,9 +164,14 @@ export const createCarousel = (config) => {
     }
   }
 
+  // Scroll
+  document.onscrollend = () => {
+    console.log('scroll')
+  }
+
 
    // First checked if any carousel item is in the viewport and loads if it does
-lazyLoad(itemListObject);
+checkItemsVisibility(itemListObject);
 
 
 }

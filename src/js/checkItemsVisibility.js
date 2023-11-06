@@ -5,14 +5,14 @@ import { youtube } from "./adapters/youtube";
 import { plaintext } from "./adapters/plaintext";
 import { itemListObject } from "./itemLists";
 
-export const lazyLoad = (itemLists) => {
+export const checkItemsVisibility = (itemLists, axis) => {
   console.log('start', itemListObject)
 
   Object.keys(itemListObject).forEach((item, index) => {
     // console.log(item, index)
     // console.log(itemListObject[item])
-    //console.log(isInViewport(item.placeholder));
-    if (isInViewport(itemListObject[item].placeholder)) {
+    console.log(isInViewport(itemListObject[item].placeholder));
+    if (isInViewport(itemListObject[item].placeholder, axis)) {
       if (itemListObject[item].placeholder.dataset.load !== 'true') {
         //let key = item.placeholder.dataset.key;
         console.log('index',item);
