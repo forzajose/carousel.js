@@ -6,7 +6,6 @@ export const isInViewport = (element, axis = 'x') => {
   // Get the item carousel width 
   let itemWidth = parseFloat(window.getComputedStyle(element).width);
   const rect = element.getBoundingClientRect();
-  // console.log(rect.right, rect.bottom, rect.top, rect.left);
   if (axis === 'x') {
     return (
       // rect.top >= 0 &&

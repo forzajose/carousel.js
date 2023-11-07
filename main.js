@@ -42,7 +42,28 @@ const config = {
   {
     type: 'YouTube',
     videoId: 'H1Dvg2MxQn8'
-  }
+  },
+  {
+    type: 'YouTube',
+    videoId: 'bV3J0cTTEFY'
+  },
+  {
+    type: 'Image',
+    url: 'https://cdn.pixabay.com/photo/2023/09/22/07/02/red-8268266_1280.jpg'
+  },
+  {
+    type: 'Image',
+    url: 'https://cdn.pixabay.com/photo/2016/02/10/21/57/heart-1192662_1280.jpg'
+  },
+  {
+    type: 'YouTube',
+    videoId: '2hDoTXR6Zr4'
+  },
+    , {
+    type: 'HTML',
+    code: `<b>Hello world</b>`
+  },
+
   ]
 };
 
