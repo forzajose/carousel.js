@@ -78,14 +78,11 @@ export const createCarousel = (config) => {
 
   // Move carousel items by clicking on arrows
   rightArrow.onclick = (e) => {
-    checkItemsVisibility(itemListObject);
-    // console.log(carouselListWidth);
-
     if (scrollDistance < carouselListWidth / 2) {
       scrollDistance += scrollStep;
       carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
+      checkItemsVisibility('x');
     } else {
-      //console.log('e');
       carouselListWrapper.classList.remove('animation__shake');
       carouselListWrapper.offsetWidth;
       carouselListWrapper.classList.add('animation__shake');
@@ -93,13 +90,11 @@ export const createCarousel = (config) => {
     }
   }
   leftArrow.onclick = (e) => {
-    checkItemsVisibility(itemListObject);
-
     if (scrollDistance > -carouselListWidth / 2) {
       scrollDistance -= scrollStep;
       carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
+      checkItemsVisibility('x');
     } else {
-      //console.log('e');
       carouselListWrapper.classList.remove('animation__shake');
       carouselListWrapper.offsetWidth;
       carouselListWrapper.classList.add('animation__shake');
@@ -130,7 +125,7 @@ export const createCarousel = (config) => {
     // wait 0.5 seconds until carousel items return to the center of the screen so they can be properly processed by lazyLoad function.
     // IMPORTANT
     // If changing carousel carouselList transition speed then accordingly change the time interval    
-    setTimeout(() => { checkItemsVisibility(itemListObject, 'y') }, 500);
+    setTimeout(() => { checkItemsVisibility('y') }, 500);
   }
 
   // Draggable carousel
@@ -151,7 +146,7 @@ export const createCarousel = (config) => {
         scrollDistance = translateX - difference;
 
         carouselList.style.transform = "translateX(" + parseInt(scrollDistance) + "px)";
-        checkItemsVisibility(itemListObject);
+        checkItemsVisibility('x');
       }
     }
   }
@@ -168,13 +163,13 @@ export const createCarousel = (config) => {
   }
 
   // Scroll vertical in unwrap mode
-  document.addEventListener('scrollend', () => {
-    checkItemsVisibility(itemListObject);
+  document.addEventListener('scroll', () => {
+    checkItemsVisibility('xy');
   })
 
 
   // First checked if any carousel item is in the viewport and loads if it does
-  checkItemsVisibility(itemListObject);
+  checkItemsVisibility('x');
 
 
 }

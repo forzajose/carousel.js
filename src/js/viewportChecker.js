@@ -9,23 +9,23 @@ export const isInViewport = (element, axis = 'x') => {
   if (axis === 'x') {
     return (
       // rect.top >= 0 &&
-      rect.left >= -itemWidth &&
+      rect.left >= -itemWidth*2 &&
       // rect.y <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth + itemWidth || document.documentElement.clientWidth + itemWidth)
+      rect.right <= (window.innerWidth + itemWidth*2 || document.documentElement.clientWidth + itemWidth)
     );
   } else if (axis === 'y') {
     return (
       rect.top >= 0 &&
       //rect.left >= -itemWidth &&
-      rect.y <= (window.innerHeight || document.documentElement.clientHeight)
+      rect.y <= (window.innerHeight*2 || document.documentElement.clientHeight*2)
       //rect.right <= (window.innerWidth + itemWidth || document.documentElement.clientWidth + itemWidth)
     );
   } else if (axis === 'xy') {
     return (
       rect.top >= 0 &&
-      rect.left >= -itemWidth &&
-      rect.y <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth + itemWidth || document.documentElement.clientWidth + itemWidth)
+      rect.left >= -itemWidth*2 &&
+      rect.y <= (window.innerHeight*2 || document.documentElement.clientHeight*2) &&
+      rect.right <= (window.innerWidth + itemWidth*2 || document.documentElement.clientWidth + itemWidth*2)
     );
   }
 
