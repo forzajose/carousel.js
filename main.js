@@ -6,6 +6,12 @@ import { createCarousel } from "./src";
 const config = {
   'id': 'carouselPlace',
   'label': 'Awesome carousel',
+  'autoslide': {
+    'speed': 1500, //1.5s
+    'direction': 'right', // left
+    'repeat': 'reverse', //reverse | start
+    'random': false, // true
+  },
   'items': [{
     type: 'Image',
     url: 'https://cdn.pixabay.com/photo/2023/10/01/19/14/oranges-8287967_1280.jpg'
@@ -58,8 +64,7 @@ const config = {
   {
     type: 'YouTube',
     videoId: '2hDoTXR6Zr4'
-  },
-    , {
+  },{
     type: 'HTML',
     code: `<b>Hello world</b>`
   },

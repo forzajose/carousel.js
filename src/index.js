@@ -26,10 +26,8 @@ export const createCarousel = (config) => {
     let i = document.createElement('li');
     i.dataset.key = key;
     i.classList.add('carousel__item', 'overlay-loader');
-    // itemListObject.push({'placeholder' : i, 'content': config.items[key]})
     itemListObject[key] = { 'placeholder': i, 'content': config.items[key] }
   })
-  //console.log(itemListObject);
 
   // Create a wrapper for carousel data
   const carouselListWrapper = document.createElement('div');
@@ -47,6 +45,9 @@ export const createCarousel = (config) => {
   // Create the carousel 
   const carousel = document.createElement('div');
   carousel.setAttribute('id', 'carousel');
+  let startSide = 'left'
+  carousel.style.justifyContent = startSide;
+  ///
   carouselPlace.append(carousel);
   carousel.append(carouselList);
 
@@ -67,7 +68,8 @@ export const createCarousel = (config) => {
   const carouselItemsCount = Object.keys(itemListObject).length;
 
   // Get the width of one carousel element (all elements are assumed to have the same width) 
-  const carouselItemWidth = parseFloat(window.getComputedStyle(itemLists[0]).width);
+  const carouselItemStyles = window.getComputedStyle(itemLists[0]);
+  const carouselItemWidth = parseFloat(carouselItemStyles.width);
   // Get the width of carousel handler
   const carouselListWidth = parseFloat(window.getComputedStyle(carouselList).width);
 
@@ -77,31 +79,72 @@ export const createCarousel = (config) => {
   let scrollDistance = 0;
 
   // Move carousel items by clicking on arrows
-  rightArrow.onclick = (e) => {
-    if (scrollDistance < carouselListWidth / 2) {
-      scrollDistance += scrollStep;
-      carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
-      checkItemsVisibility('x');
-    } else {
-      carouselListWrapper.classList.remove('animation__shake');
-      carouselListWrapper.offsetWidth;
-      carouselListWrapper.classList.add('animation__shake');
-      carouselList.style.transform = 'translateX(' + carouselListWidth / 2 + 'px)';
+
+  //////////////////
+
+  const clickArrowsHandler = (carouselLeftLimiter, carouselRightLimiter) => {
+    leftArrow.onclick = (e) => {
+      if (scrollDistance > carouselLeftLimiter) {
+        scrollDistance -= scrollStep;
+
+        let nearestNumberItem = (scrollDistance - carouselRightLimiter) / carouselItemWidthMargin;
+        let currentItemPos = carouselRightLimiter - (Math.round(Math.abs(nearestNumberItem)) * carouselItemWidthMargin);
+        let nearestItemPos = scrollDistance < carouselLeftLimiter ? carouselLeftLimiter : currentItemPos;
+
+        carouselList.style.transform = 'translateX(' + nearestItemPos + 'px)';
+        checkItemsVisibility('x');
+        //console.log(Math.round(Math.abs(nearestNumberItem)),currentItemPos,nearestItemPos,scrollDistance);
+        console.log(Math.round(Math.abs(nearestNumberItem)), scrollDistance);
+
+      }
     }
-  }
-  leftArrow.onclick = (e) => {
-    if (scrollDistance > -carouselListWidth / 2) {
-      scrollDistance -= scrollStep;
-      carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
-      checkItemsVisibility('x');
-    } else {
-      carouselListWrapper.classList.remove('animation__shake');
-      carouselListWrapper.offsetWidth;
-      carouselListWrapper.classList.add('animation__shake');
-      carouselList.style.transform = 'translateX(' + -carouselListWidth / 2 + 'px)';
+    rightArrow.onclick = (e) => {
+      if (scrollDistance < carouselRightLimiter) {
+        scrollDistance += scrollStep;
+
+        let nearestNumberItem = (scrollDistance - carouselRightLimiter) / carouselItemWidthMargin;
+        let currentItemPos = carouselRightLimiter - (Math.round(Math.abs(nearestNumberItem)) * carouselItemWidthMargin);
+        let nearestItemPos = scrollDistance > carouselRightLimiter ? carouselRightLimiter : currentItemPos;
+
+        carouselList.style.transform = 'translateX(' + nearestItemPos + 'px)';
+        checkItemsVisibility('x');
+        //console.log(Math.round(Math.abs(nearestNumberItem)),currentItemPos,nearestItemPos,scrollDistance);
+        console.log(Math.round(Math.abs(nearestNumberItem)), scrollDistance);
+
+      }
     }
   }
 
+  let windowWidth = window.innerWidth;
+  const carouselItemWidthMargin = parseFloat(carouselItemStyles.marginLeft) + parseFloat(carouselItemStyles.marginRight) + carouselItemWidth;
+
+  //Initial position of carousel
+  if (startSide === 'right') {
+    scrollDistance = -(windowWidth - carouselItemWidthMargin) / 2 + 8
+    carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
+
+    var carouselLeftLimiter = scrollDistance;
+    var carouselRightLimiter = (carouselListWidth - (windowWidth - (windowWidth - carouselItemWidthMargin) / 2));
+    console.log(carouselLeftLimiter, carouselRightLimiter, 'right')
+
+    clickArrowsHandler(carouselLeftLimiter, carouselRightLimiter);
+    
+  } else if (startSide === 'left') {
+    scrollDistance = (windowWidth - carouselItemWidthMargin) / 2 - 8
+    carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
+
+    var carouselRightLimiter = scrollDistance;
+    var carouselLeftLimiter = -(carouselListWidth - (windowWidth - (windowWidth - carouselItemWidthMargin) / 2));
+
+    clickArrowsHandler(carouselLeftLimiter, carouselRightLimiter);
+
+    console.log('carouselLeftLimiter ' + carouselLeftLimiter, 'carouselRightLimiter ' + carouselRightLimiter);
+
+  }
+
+  //////////////////
+
+  //////////////
 
   // Indicate carousel state (e.g. wrap or unwrap)
   let carouselOpen = false;
@@ -130,6 +173,19 @@ export const createCarousel = (config) => {
 
   // Draggable carousel
   carouselList.onmousedown = function (event) {
+    let nearestNumberItem = (scrollDistance - carouselRightLimiter) / carouselItemWidthMargin;
+    console.log(Math.round(Math.abs(nearestNumberItem)), scrollDistance);
+
+    // carouselLeftLimiter = Math.abs(carouselLeftLimiter) + Math.abs(carouselRightLimiter)
+    // carouselRightLimiter = 0;
+    //console.log('carouselLeftLimiter '+ carouselLeftLimiter, 'carouselRightLimiter '+carouselRightLimiter);
+
+
+    // let nearestNumberItem = (Math.abs(carouselRightLimiter) + Math.abs(scrollDistance)) / carouselItemWidthMargin;
+    // let nearestNumberItem = (scrollDistance - carouselRightLimiter) / carouselItemWidthMargin;
+    //       let nearestItemPos = carouselRightLimiter + nearestNumberItem * carouselItemWidthMargin;
+    //       console.log(scrollDistance - carouselRightLimiter)
+    //       console.log(scrollDistance,Math.round(Math.abs(nearestNumberItem)), nearestItemPos)
 
     if (carouselOpen === false) {
       carouselList.style.transition = 'none';
@@ -168,8 +224,78 @@ export const createCarousel = (config) => {
   })
 
 
+  // Autoslide
+  // if (config.autoslide) {
+  //   //scrollDistance = carouselListWidth /2;
+  //   console.log(carouselListWidth)
+  //   let autoslide = config.autoslide;
+  //   let direction = autoslide.direction;
+
+  //   let min = false;
+  //   let max = true;
+
+  //   const setCarouselStartPos = (position = 'left') => {
+  //     if (position === 'left') {
+  //       carousel.style.justifyContent = 'left';
+  //     } else if (position === 'rigth') {
+  //       carousel.style.justifyContent = 'right';
+  //     } else {
+  //       carousel.style.justifyContent = 'center';
+  //     }
+  //     checkItemsVisibility('x');
+
+  //   }
+  //   //let counter = setTimeout(setCarouselStartPos, 0);
+
+
+  //   //let counter = setTimeout(timer, 0);
+
+  //   function timer() {
+  //     carouselList.style.transition = 'none';
+  //     carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
+
+
+  //     // let counter2 = setInterval(()=>{
+  //     //   carouselList.style.transition = 'transform .5s';
+
+  //     //   if (scrollDistance >= carouselListWidth / 2) {
+  //     //     max = true;
+  //     //     min = false;
+  //     //   }
+  //     //   if (scrollDistance <= -carouselListWidth / 2) {
+  //     //     max = false;
+  //     //     min = true;
+  //     //   }
+
+  //     //   if (max) {
+  //     //     scrollDistance -= scrollStep;
+  //     //   }
+
+  //     //   if (min) {
+  //     //     scrollDistance += scrollStep;
+  //     //   }
+  //     //   checkItemsVisibility('x');
+  //     //   carouselList.style.transform = 'translateX(' + scrollDistance + 'px)';
+  //     // }, 3000);
+
+
+
+
+
+  //     // if (scrollDistance >= -carouselListWidth / 2) {
+  //     //   scrollDistance -= scrollStep;
+  //     // } 
+  //     // if (scrollDistance <= carouselListWidth / 2)  {
+  //     //   scrollDistance += scrollStep;
+
+  //     // }
+  //     //console.log(scrollDistance, scrollStep);
+  //   }
+  //   function bar() {
+
+  //   }
+  // }
+
   // First checked if any carousel item is in the viewport and loads if it does
   checkItemsVisibility('x');
-
-
 }

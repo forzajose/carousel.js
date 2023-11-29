@@ -2,6 +2,9 @@
   max-width: 1482px;
   margin: auto;
 }
+/* body {
+  margin: 0;
+} */
 #carousel {
   background-color: var(--category-bg);
   display: flex;
@@ -12,7 +15,13 @@
 }
 .carousel-label {
   font-size: 20px;
-  cursor: pointer;
+    cursor: pointer;
+    background: blue;
+    position: relative;
+    top: 45px;
+    width: 240px;
+    margin: auto;
+    text-align: center;
 }
 .arrow__wrapper {
   position: absolute;

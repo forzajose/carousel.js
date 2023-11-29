@@ -3,8 +3,8 @@ import { itemListObject } from "./itemLists";
 import { proccessByAdapters } from "./proccessByAdapters";
 
 export const checkItemsVisibility = (axis) => {
-  console.log('start', itemListObject);
-  console.log('jk',axis);
+  // console.log('start', itemListObject);
+  // console.log('jk',axis);
 
   Object.keys(itemListObject).forEach((index) => {
 
@@ -22,6 +22,6 @@ export const checkItemsVisibility = (axis) => {
       }
     }
   })
-  console.log('end', itemListObject)
+  //console.log('end', itemListObject)
 
 }
